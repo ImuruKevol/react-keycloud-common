@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
-import { alertState, useAlert } from "store/alertState";
+import { alertState, useAlert, defaultOpts } from "../store/alertState";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { defaultOpts } from "store/alertState";
 
 /**
  * example 1
