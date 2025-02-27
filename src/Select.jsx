@@ -1,0 +1,181 @@
+import { useState, useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown, faXmark } from "@fortawesome/free-solid-svg-icons";
+
+const Select = ({
+  options = [],
+  value,
+  onChange,
+  disabled = false,
+  searchable = true,
+  placeholder = "Select...",
+  className = "",
+  multiple = false,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [focusIndex, setFocusIndex] = useState(-1);
+  const [searchText, setSearchText] = useState("");
+  const containerRef = useRef(null);
+  const inputRef = useRef(null);
+
+  const filteredOptions = searchable 
+    ? options.filter(opt => 
+        opt.label.toLowerCase().includes(searchText.toLowerCase())
+      )
+    : options;
+
+  const selectedOptions = multiple 
+    ? options.filter(opt => Array.isArray(value) && value.includes(opt.value))
+    : options.find(opt => opt.value === value);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSearchText("");
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
+
+  const handleKeyDown = (e) => {
+    if (disabled) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        if (!isOpen) {
+          setIsOpen(true);
+        }
+        setFocusIndex(prev => 
+          prev < filteredOptions.length - 1 ? prev + 1 : prev
+        );
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setFocusIndex(prev => prev > 0 ? prev - 1 : prev);
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (focusIndex >= 0 && filteredOptions[focusIndex]) {
+          handleOptionSelect(filteredOptions[focusIndex].value);
+        }
+        break;
+      case "Escape":
+        setIsOpen(false);
+        setFocusIndex(-1);
+        break;
+    }
+  };
+
+  const handleOptionSelect = (optionValue) => {
+    if (multiple) {
+      const newValue = Array.isArray(value) ? [...value] : [];
+      const index = newValue.indexOf(optionValue);
+      if (index === -1) {
+        newValue.push(optionValue);
+      } else {
+        newValue.splice(index, 1);
+      }
+      onChange(newValue);
+      if (!isOpen) setIsOpen(true);
+    } else {
+      onChange(optionValue);
+      setIsOpen(false);
+    }
+    setFocusIndex(-1);
+  };
+
+  const removeOption = (optionValue, e) => {
+    e.stopPropagation();
+    const newValue = value.filter(v => v !== optionValue);
+    onChange(newValue);
+  };
+
+  return (
+    <div 
+      ref={containerRef}
+      className={`relative ${className}`}
+      onKeyDown={handleKeyDown}
+    >
+      <div
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        className={`px-4 h-8 border rounded-full flex items-center cursor-pointer ${
+          disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
+        }`}
+      >
+        {searchable && isOpen ? (
+          <input
+            ref={inputRef}
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            className="w-full outline-none"
+            placeholder={placeholder}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ) : (
+          <span className={!selectedOptions || (Array.isArray(selectedOptions) && !selectedOptions.length) ? "text-gray-400" : ""}>
+            {multiple 
+              ? (selectedOptions.length ? `${selectedOptions.length} selected` : placeholder)
+              : (selectedOptions ? selectedOptions.label : placeholder)
+            }
+          </span>
+        )}
+        <FontAwesomeIcon icon={faChevronDown} className="ml-auto" />
+      </div>
+
+      {multiple && Array.isArray(value) && value.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {selectedOptions.map(option => (
+            <span 
+              key={option.value}
+              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
+            >
+              {option.label}
+              <button
+                onClick={(e) => removeOption(option.value, e)}
+                className="ml-1 hover:text-blue-600"
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {isOpen && (
+        <div className="absolute w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-auto z-50">
+          {filteredOptions.length === 0 ? (
+            <div className="px-4 py-2 text-gray-500">No options</div>
+          ) : (
+            filteredOptions.map((option, index) => (
+              <div
+                key={option.value}
+                onClick={() => handleOptionSelect(option.value)}
+                className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                  focusIndex === index ? "bg-gray-100" : ""
+                } ${multiple 
+                    ? (Array.isArray(value) && value.includes(option.value) ? "bg-blue-100" : "")
+                    : (value === option.value ? "bg-blue-100" : "")
+                  }`}
+              >
+                {option.label}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Select;
