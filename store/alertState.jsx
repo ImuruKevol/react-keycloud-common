@@ -1,4 +1,4 @@
-import { atom, selector, useRecoilState } from "recoil";
+import { atom, useRecoilState } from "recoil";
 
 // Default options
 export const defaultOpts = {
@@ -92,3 +92,4 @@ export const useAlert = () => {
   return { show, close, success, error, warning, alert };
 };
 
+export default useAlert;

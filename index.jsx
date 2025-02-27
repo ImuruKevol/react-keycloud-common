@@ -4,7 +4,7 @@ import Switch from "./src/Switch";
 import Pagination from "./src/Pagination";
 import Modal from "./src/Modal";
 
-import { alertState } from "./store/alertState";
+import useAlert from "./store/alertState";
 
-export { InputFile, Select, Switch, Pagination, Modal, alertState };
+export { InputFile, Select, Switch, Pagination, Modal, useAlert };
 
