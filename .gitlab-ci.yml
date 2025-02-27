@@ -1,9 +1,0 @@
-stages:
-  - deploy
-
-publish-npm:
-  stage: deploy
-  script:
-    - echo "@keycloud:registry=https://git.nanoha.kr/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
-    - echo "https://git.nanoha.kr/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_DEPLOY_TOKEN}" >> .npmrc
-    - npm publish
