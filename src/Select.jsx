@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faChevronUp,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Select = ({
   options = [],
@@ -11,6 +15,8 @@ const Select = ({
   placeholder = "Select...",
   className = "",
   multiple = false,
+  align = "center",
+  maxHeight = "240px",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
@@ -18,19 +24,22 @@ const Select = ({
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
-  const filteredOptions = searchable 
-    ? options.filter(opt => 
+  const filteredOptions = searchable
+    ? options.filter((opt) =>
         opt.label.toLowerCase().includes(searchText.toLowerCase())
       )
     : options;
 
-  const selectedOptions = multiple 
-    ? options.filter(opt => Array.isArray(value) && value.includes(opt.value))
-    : options.find(opt => opt.value === value);
+  const selectedOptions = multiple
+    ? options.filter((opt) => Array.isArray(value) && value.includes(opt.value))
+    : options.find((opt) => opt.value === value);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -55,13 +64,13 @@ const Select = ({
         if (!isOpen) {
           setIsOpen(true);
         }
-        setFocusIndex(prev => 
+        setFocusIndex((prev) =>
           prev < filteredOptions.length - 1 ? prev + 1 : prev
         );
         break;
       case "ArrowUp":
         e.preventDefault();
-        setFocusIndex(prev => prev > 0 ? prev - 1 : prev);
+        setFocusIndex((prev) => (prev > 0 ? prev - 1 : prev));
         break;
       case "Enter":
         e.preventDefault();
@@ -96,20 +105,16 @@ const Select = ({
 
   const removeOption = (optionValue, e) => {
     e.stopPropagation();
-    const newValue = value.filter(v => v !== optionValue);
+    const newValue = value.filter((v) => v !== optionValue);
     onChange(newValue);
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className={`relative ${className}`}
-      onKeyDown={handleKeyDown}
-    >
+    <div ref={containerRef} className="relative" onKeyDown={handleKeyDown}>
       <div
         onClick={() => !disabled && setIsOpen(!isOpen)}
-        className={`px-4 h-8 border rounded-full flex items-center cursor-pointer ${
-          disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
+        className={`px-4 h-8 border rounded-full flex items-center cursor-pointer ${className} ${
+          disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"
         }`}
       >
         {searchable && isOpen ? (
@@ -118,25 +123,38 @@ const Select = ({
             type="text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="w-full outline-none"
+            className={`w-full outline-none text-${align}`}
             placeholder={placeholder}
             onClick={(e) => e.stopPropagation()}
           />
         ) : (
-          <span className={!selectedOptions || (Array.isArray(selectedOptions) && !selectedOptions.length) ? "text-gray-400" : ""}>
-            {multiple 
-              ? (selectedOptions.length ? `${selectedOptions.length} selected` : placeholder)
-              : (selectedOptions ? selectedOptions.label : placeholder)
-            }
+          <span
+            className={`w-full text-${align} ${
+              !selectedOptions ||
+              (Array.isArray(selectedOptions) && !selectedOptions.length)
+                ? "text-gray-400"
+                : ""
+            }`}
+          >
+            {multiple
+              ? selectedOptions.length
+                ? `${selectedOptions.length} selected`
+                : placeholder
+              : selectedOptions
+              ? selectedOptions.label
+              : placeholder}
           </span>
         )}
-        <FontAwesomeIcon icon={faChevronDown} className="ml-auto" />
+        <FontAwesomeIcon
+          icon={isOpen ? faChevronUp : faChevronDown}
+          className="absolute right-4"
+        />
       </div>
 
       {multiple && Array.isArray(value) && value.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
-          {selectedOptions.map(option => (
-            <span 
+          {selectedOptions.map((option) => (
+            <span
               key={option.value}
               className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
             >
@@ -153,7 +171,10 @@ const Select = ({
       )}
 
       {isOpen && (
-        <div className="absolute w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-auto z-50">
+        <div
+          className={`absolute w-full mt-1 bg-white border rounded-lg shadow-lg overflow-auto z-50 text-${align}`}
+          style={{ maxHeight }}
+        >
           {filteredOptions.length === 0 ? (
             <div className="px-4 py-2 text-gray-500">No options</div>
           ) : (
@@ -163,10 +184,15 @@ const Select = ({
                 onClick={() => handleOptionSelect(option.value)}
                 className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
                   focusIndex === index ? "bg-gray-100" : ""
-                } ${multiple 
-                    ? (Array.isArray(value) && value.includes(option.value) ? "bg-blue-100" : "")
-                    : (value === option.value ? "bg-blue-100" : "")
-                  }`}
+                } ${
+                  multiple
+                    ? Array.isArray(value) && value.includes(option.value)
+                      ? "bg-blue-100"
+                      : ""
+                    : value === option.value
+                    ? "bg-blue-100"
+                    : ""
+                }`}
               >
                 {option.label}
               </div>
