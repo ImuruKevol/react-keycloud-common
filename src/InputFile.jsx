@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const InputFile = ({
   label = "Choose File",
@@ -8,6 +8,13 @@ const InputFile = ({
   className = "",
 }) => {
   const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    // value가 base64 또는 이미지 URL인 경우 preview 설정
+    if (typeof value === "string" && (value.startsWith("data:image/") || value.startsWith("http"))) {
+      setPreview(value);
+    }
+  }, [value]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
