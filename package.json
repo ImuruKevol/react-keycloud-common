@@ -1,5 +1,5 @@
 {
-  "name": "keycloud-common",
+  "name": "@imurukevol/react-keycloud-common",
   "version": "0.0.6",
   "main": "index.jsx",
   "scripts": {
@@ -7,5 +7,12 @@
   },
   "author": "kwon3286@season.co.kr",
   "license": "MIT",
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imurukevol/react-keycloud-common.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
