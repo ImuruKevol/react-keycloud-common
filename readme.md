@@ -5,7 +5,7 @@ This package is tested by esbuild, tailwind
 ## npm install
 
 ```shell
-npm install keycloud-common --registry=https://git.nanoha.kr/api/v4/projects/$PROJECT_ID/packages/npm/
+npm install @imurukevol/react-keycloud-common
 ```
 
 ## npm publish
@@ -19,12 +19,17 @@ npm login --scope=@imurukevol --auth-type=legacy --registry=https://npm.pkg.gith
 
 2. `~/.npmrc`
 
+Replace `ghp_1234567890` with your github token.
+Replace `@imurukevol` with your github username.
+
 ```shell
 //npm.pkg.github.com/:_authToken=ghp_1234567890
 @imurukevol:registry=https://npm.pkg.github.com/
 ```
 
 3. check package.json
+
+Check `name`, `version`, `repository`, `publishConfig` in `package.json`.
 
 ```json
 {
