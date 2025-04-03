@@ -34,7 +34,7 @@ Check `name`, `version`, `repository`, `publishConfig` in `package.json`.
 ```json
 {
   "name": "@imurukevol/react-keycloud-common",
-  "version": "0.0.6",
+  "version": "0.0.7",
   ...
   "repository": {
     "type": "git",
