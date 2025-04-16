@@ -13,6 +13,7 @@ const Select = ({
   disabled = false,
   searchable = true,
   placeholder = "Select...",
+  widthClassName = "w-md",
   className = "",
   multiple = false,
   align = "center",
@@ -113,7 +114,7 @@ const Select = ({
     <div ref={containerRef} className="relative" onKeyDown={handleKeyDown}>
       <div
         onClick={() => !disabled && setIsOpen(!isOpen)}
-        className={`px-4 h-8 border rounded-full flex items-center cursor-pointer ${className} ${
+        className={`relative px-4 h-8 border rounded-full flex items-center cursor-pointer ${className} ${widthClassName} ${
           disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"
         }`}
       >
@@ -172,7 +173,7 @@ const Select = ({
 
       {isOpen && (
         <div
-          className={`absolute w-full mt-1 bg-white border rounded-lg shadow-lg overflow-auto z-50 text-${align}`}
+          className={`absolute mt-1 ${widthClassName} bg-white border rounded-lg shadow-lg overflow-auto z-50 text-${align}`}
           style={{ maxHeight }}
         >
           {filteredOptions.length === 0 ? (
