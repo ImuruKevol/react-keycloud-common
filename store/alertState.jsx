@@ -38,6 +38,20 @@ export const useAlert = () => {
     });
   };
 
+  const confirm = (message, opts = {}) => {
+    setAlert((prev) => ({
+      ...prev,
+      opts: { ...defaultOpts, message, action: "Confirm", ...opts },
+      isOpen: true,
+    }));
+    return new Promise((resolve) => {
+      setAlert((prev) => ({
+        ...prev,
+        resolve: resolve,
+      }));
+    });
+  }
+
   const close = (res = false) => {
     setAlert((prev) => ({
       ...prev,
@@ -89,7 +103,7 @@ export const useAlert = () => {
     });
   };
 
-  return { show, close, success, error, warning, alert };
+  return { show, close, success, error, warning, alert, confirm };
 };
 
 export default useAlert;
