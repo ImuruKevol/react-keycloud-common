@@ -142,7 +142,11 @@ const Select = ({
                 ? `${selectedOptions.length} selected`
                 : placeholder
               : selectedOptions
-              ? selectedOptions.label
+              ? <>
+                {selectedOptions.icon && selectedOptions.iconPosition === "left" && selectedOptions.icon}
+                {selectedOptions.label}
+                {selectedOptions.icon && selectedOptions.iconPosition === "right" && selectedOptions.icon}
+              </>
               : placeholder}
           </span>
         )}
