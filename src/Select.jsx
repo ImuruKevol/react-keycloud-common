@@ -159,7 +159,9 @@ const Select = ({
               key={option.value}
               className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
             >
+              {option.icon && option.iconPosition === "left" && option.icon}
               {option.label}
+              {option.icon && option.iconPosition === "right" && option.icon}
               <button
                 onClick={(e) => removeOption(option.value, e)}
                 className="ml-1 hover:text-blue-600"
@@ -195,7 +197,9 @@ const Select = ({
                     : ""
                 }`}
               >
+                {option.icon && option.iconPosition === "left" && option.icon}
                 {option.label}
+                {option.icon && option.iconPosition === "right" && option.icon}
               </div>
             ))
           )}
