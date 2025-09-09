@@ -4,6 +4,7 @@ const InputFile = ({
   label = "Choose File",
   value,
   onChange,
+  disabled = false,
   accept = "image/*",
   className = "",
 }) => {
@@ -17,6 +18,7 @@ const InputFile = ({
   }, [value]);
 
   const handleFileChange = (e) => {
+    if (disabled) return;
     const file = e.target.files[0];
     if (!file) {
       setPreview(null);
@@ -39,6 +41,7 @@ const InputFile = ({
   };
 
   const clearFile = () => {
+    if (disabled) return;
     setPreview(null);
     onChange(null);
   };
@@ -74,19 +77,20 @@ const InputFile = ({
           </div>
         </div>
       )}
-      <label className={`cursor-pointer transition-colors ${className}`}>
+      <label className={`cursor-pointer transition-colors ${className} ${disabled ? "cursor-not-allowed" : ""}`}>
         <span className="text-gray-700">{label}</span>
         <input
           type="file"
           className="hidden"
           accept={accept}
+          disabled={disabled}
           onChange={handleFileChange}
         />
       </label>
       {value && (
         <>
           <span className="text-sm text-gray-500">{value.name}</span>
-          <button className="text-sm text-gray-500" onClick={clearFile}>
+          <button className="text-sm text-gray-500" onClick={clearFile} disabled={disabled}>
             <svg
               className="size-5 text-red-500 hover:bg-red-100 rounded-lg"
               fill="none"
