@@ -5,8 +5,11 @@ const InputFile = ({
   value,
   onChange,
   disabled = false,
-  accept = "image/*",
+  accept = "*",
+  // accept = "image/*",
+  containerClassName = "",
   className = "",
+  valueClassName = "",
 }) => {
   const [preview, setPreview] = useState(null);
 
@@ -47,7 +50,7 @@ const InputFile = ({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={`flex items-center gap-2 ${containerClassName}`}>
       {preview && (
         <div className="relative">
           <img
@@ -77,7 +80,7 @@ const InputFile = ({
           </div>
         </div>
       )}
-      <label className={`cursor-pointer transition-colors ${className} ${disabled ? "cursor-not-allowed" : ""}`}>
+      <label className={`cursor-pointer transition-colors px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${className} ${disabled ? "cursor-not-allowed" : ""}`}>
         <span className="text-gray-700">{label}</span>
         <input
           type="file"
@@ -89,7 +92,7 @@ const InputFile = ({
       </label>
       {value && (
         <>
-          <span className="text-sm text-gray-500">{value.name}</span>
+          <span className={`text-sm text-gray-500 ${valueClassName}`}>{value.name}</span>
           <button className="text-sm text-gray-500" onClick={clearFile} disabled={disabled}>
             <svg
               className="size-5 text-red-500 hover:bg-red-100 rounded-lg"
