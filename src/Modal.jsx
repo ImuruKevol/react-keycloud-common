@@ -5,36 +5,45 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 /**
- * example 1
-import { useAlert } from "store/alertState";
-
-const alert = useAlert();
-const res = await alert.success("Hello"); // true / false
-const res = await alert.error("Hello"); // true / false
-const res = await alert.warning("Hello"); // true / false
-
- */
-
-/**
- * example 2
-
-// function component 추천 (not arrow component)
-const [modal, setModal] = useState(null);
-...
-setModal({
-  title: "패스워드 변경",
-  action: "Set Password",
-  onClose: ((res) => { // true / false
-    if (!res) return setModal(false);
-    this.changePassword();
-  }),
-});
-
-{modal && (
-<Modal model={modal}>
-  <div>Hello</div>
-</Modal>
-)}
+ * @typedef {Object} ModalModel
+ * @property {string} [title] - Modal의 제목 텍스트.
+ * @property {string|React.ReactNode} [message] - Modal의 본문 메시지 또는 React 노드.
+ * @property {string} [status] - 버튼 색상 및 스타일을 결정하는 상태값. ("warning" | "success" | "error" 등)
+ * @property {string} [action] - 주요 액션 버튼의 라벨 텍스트.
+ * @property {function} [onClose] - Modal이 닫힐 때 호출되는 콜백 함수. (res: any) => void
+ * @property {string} [actionClassName] - 주요 액션 버튼에 추가할 커스텀 클래스명.
+ * @property {string} [cancel] - 취소 버튼의 라벨 텍스트.
+ * @property {string} [cancelClassName] - 취소 버튼에 추가할 커스텀 클래스명.
+ * @property {Array<{
+ *   label: string, // 추가 버튼의 라벨
+ *   value?: any, // 버튼 클릭 시 close에 전달할 값
+ *   onClick?: function, // 버튼 클릭 시 실행할 함수
+ *   className?: string // 버튼에 추가할 커스텀 클래스명
+ * }>} [additional] - 추가 버튼들의 배열.
+ * @property {Object} [style] - Modal의 최상위 div에 적용할 인라인 스타일 객체.
+ * @example
+ * const modal = {
+ *   title: "Modal Title",
+ *   message: "Modal Message",
+ *   status: "success",
+ *   action: "Action",
+ *   actionClassName: "bg-blue-500 text-white",
+ *   cancel: "Cancel",
+ *   cancelClassName: "bg-gray-500 text-white",
+ *   additional: [
+ *     { label: "Additional", value: "additional", onClick: () => { console.log("additional"); } },
+ *   ],
+ *   onClose: (res) => {
+ *     console.log(res);
+ *   },
+ *   style: {
+ *     width: "500px",
+ *     height: "300px",
+ *   },
+ * };
+ *
+ * <Modal model={modal} />
+ *
  */
 
 const Modal = (props) => {
@@ -163,7 +172,7 @@ const Modal = (props) => {
             <div className="sm:mt-4 sm:flex sm:flex-row-reverse mt-3">
               {model.action && (
                 <button
-                  className={btnColorClass()}
+                  className={`${btnColorClass()} ${model.actionClassName || ""}`}
                   onClick={() => {
                     close(true);
                   }}
@@ -188,7 +197,7 @@ const Modal = (props) => {
               {model.cancel && <button
                 onClick={() => close(false)}
                 type="button"
-                className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                className={`inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto ${model.cancelClassName || ""}`}
               >
                 {model.cancel}
               </button>}
