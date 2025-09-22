@@ -64,7 +64,7 @@ export const useAlert = () => {
   const success = async (message, title = "Success!") => {
     setAlert((prev) => ({
       ...prev,
-      opts: { ...defaultOpts, message, title, status: "success" },
+      opts: { ...defaultOpts, message, title, status: "success", action: "Close" },
       isOpen: true,
     }));
     return new Promise((resolve) => {
