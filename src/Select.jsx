@@ -22,8 +22,10 @@ const Select = ({
   const [isOpen, setIsOpen] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
   const [searchText, setSearchText] = useState("");
+  const [openUpward, setOpenUpward] = useState(false);
   const containerRef = useRef(null);
   const inputRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const filteredOptions = searchable
     ? options.filter((opt) =>
@@ -53,8 +55,30 @@ const Select = ({
     if (isOpen) {
       setSearchText("");
       inputRef.current.focus();
+      
+      const calculatePosition = () => {
+        if (containerRef.current) {
+          const rect = containerRef.current.getBoundingClientRect();
+          const spaceBelow = window.innerHeight - rect.bottom;
+          const maxHeightValue = parseInt(maxHeight) || 240;
+          const spaceNeeded = maxHeightValue + 8; // 8px for margin
+          
+          setOpenUpward(spaceBelow < spaceNeeded && rect.top > spaceNeeded);
+        }
+      };
+      
+      calculatePosition();
+      
+      // Recalculate on scroll and resize
+      window.addEventListener('scroll', calculatePosition, true);
+      window.addEventListener('resize', calculatePosition);
+      
+      return () => {
+        window.removeEventListener('scroll', calculatePosition, true);
+        window.removeEventListener('resize', calculatePosition);
+      };
     }
-  }, [isOpen]);
+  }, [isOpen, maxHeight]);
 
   const handleKeyDown = (e) => {
     if (disabled) return;
@@ -179,7 +203,8 @@ const Select = ({
 
       {isOpen && (
         <div
-          className={`absolute mt-1 ${widthClassName} bg-white border rounded-lg shadow-lg overflow-auto z-50 text-${align}`}
+          ref={dropdownRef}
+          className={`absolute ${openUpward ? 'bottom-full mb-1' : 'mt-1'} ${widthClassName} bg-white border rounded-lg shadow-lg overflow-auto z-50 text-${align}`}
           style={{ maxHeight }}
         >
           {filteredOptions.length === 0 ? (
