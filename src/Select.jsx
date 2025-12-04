@@ -135,105 +135,107 @@ const Select = ({
   };
 
   return (
-    <div ref={containerRef} className="relative" onKeyDown={handleKeyDown}>
-      <div
-        onClick={() => !disabled && setIsOpen(!isOpen)}
-        className={`relative px-4 h-8 border rounded-full flex items-center cursor-pointer ${className} ${widthClassName} ${
-          disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"
-        }`}
-      >
-        {searchable && isOpen ? (
-          <input
-            ref={inputRef}
-            type="text"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className={`w-full outline-none text-${align}`}
-            placeholder={placeholder}
-            onClick={(e) => e.stopPropagation()}
-          />
-        ) : (
-          <span
-            className={`w-full text-${align} ${
-              !selectedOptions ||
-              (Array.isArray(selectedOptions) && !selectedOptions.length)
-                ? "text-gray-400"
-                : ""
-            }`}
-          >
-            {multiple
-              ? selectedOptions.length
-                ? `${selectedOptions.length} selected`
-                : placeholder
-              : selectedOptions
-              ? <>
-                {selectedOptions.icon && selectedOptions.iconPosition === "left" && selectedOptions.icon}
-                {selectedOptions.label}
-                {selectedOptions.icon && selectedOptions.iconPosition === "right" && selectedOptions.icon}
-              </>
-              : placeholder}
-          </span>
-        )}
-        <FontAwesomeIcon
-          icon={isOpen ? faChevronUp : faChevronDown}
-          className="absolute right-4"
-        />
-      </div>
-
-      {multiple && Array.isArray(value) && value.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2">
-          {selectedOptions.map((option) => (
-            <span
-              key={option.value}
-              className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
-            >
-              {option.icon && option.iconPosition === "left" && option.icon}
-              {option.label}
-              {option.icon && option.iconPosition === "right" && option.icon}
-              <button
-                onClick={(e) => removeOption(option.value, e)}
-                className="ml-1 hover:text-blue-600"
-              >
-                <FontAwesomeIcon icon={faXmark} />
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
-
-      {isOpen && (
+    <div className="flex" ref={containerRef} onKeyDown={handleKeyDown}>
+      <div className="relative">
         <div
-          ref={dropdownRef}
-          className={`absolute ${openUpward ? 'bottom-full mb-1' : 'mt-1'} ${widthClassName} bg-white border rounded-lg shadow-lg overflow-auto z-50 text-${align}`}
-          style={{ maxHeight }}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          className={`relative px-4 h-8 border rounded-full flex items-center cursor-pointer ${className} ${widthClassName} ${
+            disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"
+          }`}
         >
-          {filteredOptions.length === 0 ? (
-            <div className="px-4 py-2 text-gray-500">No options</div>
+          {searchable && isOpen ? (
+            <input
+              ref={inputRef}
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className={`w-full outline-none text-${align}`}
+              placeholder={placeholder}
+              onClick={(e) => e.stopPropagation()}
+            />
           ) : (
-            filteredOptions.map((option, index) => (
-              <div
+            <span
+              className={`w-full text-${align} ${
+                !selectedOptions ||
+                (Array.isArray(selectedOptions) && !selectedOptions.length)
+                  ? "text-gray-400"
+                  : ""
+              }`}
+            >
+              {multiple
+                ? selectedOptions.length
+                  ? `${selectedOptions.length} selected`
+                  : placeholder
+                : selectedOptions
+                ? <>
+                  {selectedOptions.icon && selectedOptions.iconPosition === "left" && selectedOptions.icon}
+                  {selectedOptions.label}
+                  {selectedOptions.icon && selectedOptions.iconPosition === "right" && selectedOptions.icon}
+                </>
+                : placeholder}
+            </span>
+          )}
+          <FontAwesomeIcon
+            icon={isOpen ? faChevronUp : faChevronDown}
+            className="absolute right-4"
+          />
+        </div>
+
+        {multiple && Array.isArray(value) && value.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {selectedOptions.map((option) => (
+              <span
                 key={option.value}
-                onClick={() => handleOptionSelect(option.value)}
-                className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                  focusIndex === index ? "bg-gray-100" : ""
-                } ${
-                  multiple
-                    ? Array.isArray(value) && value.includes(option.value)
-                      ? "bg-blue-100"
-                      : ""
-                    : value === option.value
-                    ? "bg-blue-100"
-                    : ""
-                }`}
+                className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
               >
                 {option.icon && option.iconPosition === "left" && option.icon}
                 {option.label}
                 {option.icon && option.iconPosition === "right" && option.icon}
-              </div>
-            ))
-          )}
-        </div>
-      )}
+                <button
+                  onClick={(e) => removeOption(option.value, e)}
+                  className="ml-1 hover:text-blue-600"
+                >
+                  <FontAwesomeIcon icon={faXmark} />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
+        {isOpen && (
+          <div
+            ref={dropdownRef}
+            className={`absolute ${openUpward ? 'bottom-full mb-1' : 'mt-1'} ${widthClassName} bg-white border rounded-lg shadow-lg overflow-auto z-50 text-${align}`}
+            style={{ maxHeight }}
+          >
+            {filteredOptions.length === 0 ? (
+              <div className="px-4 py-2 text-gray-500">No options</div>
+            ) : (
+              filteredOptions.map((option, index) => (
+                <div
+                  key={option.value}
+                  onClick={() => handleOptionSelect(option.value)}
+                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                    focusIndex === index ? "bg-gray-100" : ""
+                  } ${
+                    multiple
+                      ? Array.isArray(value) && value.includes(option.value)
+                        ? "bg-blue-100"
+                        : ""
+                      : value === option.value
+                      ? "bg-blue-100"
+                      : ""
+                  }`}
+                >
+                  {option.icon && option.iconPosition === "left" && option.icon}
+                  {option.label}
+                  {option.icon && option.iconPosition === "right" && option.icon}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
