@@ -18,7 +18,7 @@ const Switch = ({
         <button
           key={option.value}
           className={`relative z-10 px-4 py-2 text-sm font-medium transition-all focus:outline-none ${
-            value === option.value ? "text-white" : "text-gray-700"
+            value === option.value ? (option.labelClassName || "text-white") : "text-gray-700"
           } ${disabled ? "cursor-not-allowed" : ""}`}
           style={{
             width: `${100 / options.length}%`,
@@ -29,10 +29,12 @@ const Switch = ({
         </button>
       ))}
       <div
-        className="absolute inset-0 bg-blue-500 rounded-full transition-all"
+        className={`absolute inset-0 rounded-full transition-all
+          ${options.find((opt) => opt.value === value)?.colorClassName || "bg-blue-500"}
+        `}
         style={{
           left: `${
-            (options.findIndex((opt) => opt.value === value) / options.length) *
+            ((options.findIndex((opt) => opt.value === value) || 0) / options.length) *
             100
           }%`,
           width: `${100 / options.length}%`,
