@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useRecoilValue } from "recoil";
-import { alertState, useAlert, defaultOpts } from "../store/alertState";
+import React, { useState, useEffect, useCallback } from "react";
+import { defaultOpts, useAlertStore } from "../store/alertState";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -47,27 +46,26 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
  */
 
 const Modal = (props) => {
-  const { opts, isOpen } = useRecoilValue(alertState);
+  // opts를 개별적으로 선택하여 참조 안정성 확보
+  const opts = useAlertStore((state) => state.opts);
+  const isOpen = useAlertStore((state) => state.isOpen);
   const [model, setModel] = useState(null);
-  const alert = useAlert();
 
-  const close = (res = false) => {
-    if (model && model.onClose) model.onClose(res);
-    else alert.close(res);
-  };
-
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.key === "Escape") {
-        close(false);
-      }
+  const close = useCallback((res = false) => {
+    if (model && model.onClose) {
+      model.onClose(res);
+    } else {
+      // store를 통해 직접 close 처리
+      const currentResolve = useAlertStore.getState().resolve;
+      useAlertStore.setState({
+        opts: defaultOpts,
+        isOpen: false,
+      });
+      if (currentResolve) currentResolve(res);
     }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  }, [model]);
 
+  // opts와 props.model의 변경을 감지하여 model 업데이트
   useEffect(() => {
     const obj = props.model || opts;
     setModel({ ...defaultOpts, ...obj });
